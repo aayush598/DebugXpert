@@ -1,72 +1,26 @@
-import * as vscode from "vscode";
-import axios from "axios";
-import * as dotenv from "dotenv";
-import * as path from "path";
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
+import * as vscode from 'vscode';
 
-// Load .env file
-dotenv.config({ path: path.join(__dirname, "..", ".env") });
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-  vscode.window.showErrorMessage("❌ Missing Gemini API Key! Add it to the .env file.");
-}
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-
+// This method is called when your extension is activated
+// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  const diagnosticCollection = vscode.languages.createDiagnosticCollection("bugDetector");
 
-  vscode.workspace.onDidChangeTextDocument(async (event) => {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor || event.document !== editor.document) {
-      return;
-    }
-    await detectBugs(event.document, diagnosticCollection);
-  });
+	// Use the console to output diagnostic information (console.log) and errors (console.error)
+	// This line of code will only be executed once when your extension is activated
+	console.log('Congratulations, your extension "nexora" is now active!');
 
-  vscode.workspace.onDidOpenTextDocument(async (document) => {
-    await detectBugs(document, diagnosticCollection);
-  });
+	// The command has been defined in the package.json file
+	// Now provide the implementation of the command with registerCommand
+	// The commandId parameter must match the command field in package.json
+	const disposable = vscode.commands.registerCommand('nexora.helloWorld', () => {
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		vscode.window.showInformationMessage('Hello World from Nexora124!');
+	});
 
-  context.subscriptions.push(diagnosticCollection);
+	context.subscriptions.push(disposable);
 }
 
-async function detectBugs(document: vscode.TextDocument, collection: vscode.DiagnosticCollection) {
-  if (!GEMINI_API_KEY) return;
-
-  const text = document.getText();
-  if (!text.trim()) return;
-
-  try {
-    const response = await axios.post(
-      GEMINI_API_URL,
-      {
-        contents: [
-          {
-            parts: [
-              { text: `Find bugs in the following code and return a JSON array of objects with 'message' and 'line':\n${text}` }
-            ]
-          }
-        ]
-      },
-      {
-        headers: { "Content-Type": "application/json" }
-      }
-    );
-
-    const geminiResponse = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-    const bugReports = JSON.parse(geminiResponse);
-
-    const diagnostics: vscode.Diagnostic[] = bugReports.map((bug: any) => {
-      const line = Math.max(0, bug.line - 1);
-      const range = new vscode.Range(new vscode.Position(line, 0), new vscode.Position(line, 100));
-      return new vscode.Diagnostic(range, bug.message, vscode.DiagnosticSeverity.Warning);
-    });
-
-    collection.set(document.uri, diagnostics);
-  } catch (error) {
-    console.error("Error fetching from Gemini API:", error);
-    vscode.window.showErrorMessage("⚠️ Failed to fetch bug reports from Gemini API.");
-  }
-}
-
+// This method is called when your extension is deactivated
 export function deactivate() {}
