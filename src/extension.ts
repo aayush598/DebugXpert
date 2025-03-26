@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { openFile } from './utils/fileNavigation';
+import { activateMain } from './main';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -8,7 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const disposable = vscode.commands.registerCommand('nexora.helloWorld', () => {
 	
-		openFile();
+		activateMain();
 	});
 
 	context.subscriptions.push(disposable);
