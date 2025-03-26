@@ -1,8 +1,5 @@
-
-import { fetchAutocompletions } from './utils/autocomplete';
+import { addDocumentation } from './utils/addDocumentation';
 
 export function activateMain() {
-
-    fetchAutocompletions();
-
+    addDocumentation();
 }
