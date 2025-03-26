@@ -3,11 +3,11 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM" });
 
-export async function analyzeCode() {
+export async function errorfix() {
     // Hardcoded sample code for testing
     const code = `
     function add(a, b) {
-        return A + b;
+        return A + B;
     }
 
     console.log(add(5, 10));
@@ -18,7 +18,7 @@ export async function analyzeCode() {
 
         const response = await ai.models.generateContent({
             model: "gemini-2.0-flash",
-            contents: `Analyze the following code in 40 words and provide improvements:\n\n${code}`
+            contents: `Check the following code for errors. Identify mistakes and suggest improvements in 40 words:\n\n${code}`
         });
 
         const analysis = response?.text?.trim() || "No analysis received.";
