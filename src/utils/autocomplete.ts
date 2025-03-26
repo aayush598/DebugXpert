@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { GoogleGenAI } from "@google/genai";
 import * as dotenv from 'dotenv';
+import { openAndCompareFile } from './compareFile';
 
 dotenv.config();
 
@@ -70,15 +71,9 @@ Return a **valid JSON object** with the key "updated_code".
         }
 
         const updatedCode = parsedData.updated_code;
+        
 
-        const userChoice = await vscode.window.showInformationMessage(
-            `AI suggests the following update:\n\n${updatedCode}\n\nDo you want to apply the changes?`,
-            "Yes", "No"
-        );
-
-        if (userChoice === "Yes") {
-            applyCodeUpdate(updatedCode);
-        }
+        openAndCompareFile(codeContext, updatedCode, "Code Comparison");
 
         return updatedCode;
     } catch (error) {
