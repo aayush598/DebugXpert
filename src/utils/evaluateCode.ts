@@ -6,7 +6,7 @@ dotenv.config();
 
 const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM" });
 
-export async function evaluateCode() {
+export async function evaluateCode(personalizationData: any) {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -43,6 +43,12 @@ ${code}
 \`\`\`
 
 Generate a well-structured Markdown report with clear sections, headings, and recommendations.
+
+Additional Information :-
+- **Tech Stack:** ${personalizationData.techStack}
+- **Project Name:** ${personalizationData.projectName}
+- **Project Directory:** ${personalizationData.fileDirectory}
+- **System User:** ${personalizationData.systemUser}
 `;
 
     try {

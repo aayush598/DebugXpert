@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM" });
 
-export async function errorfix(): Promise<string> {  
+export async function errorfix(personalizationData: any): Promise<string> {  
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -30,7 +30,13 @@ export async function errorfix(): Promise<string> {
             model: "gemini-2.0-flash",
             contents: `Fix the following ${document.languageId} code:\n\n${code}\n\n
             Provide only the corrected code **inside triple backticks** (\`\`\`), without any explanation or additional text. 
-            No markdown, no extra formatting, just the code output.`
+            No markdown, no extra formatting, just the code output.
+            
+            Additional Information:
+            Tech Stack: ${personalizationData.techStack}
+            Project Name: ${personalizationData.projectName}
+            Project Directory: ${personalizationData.fileDirectory}
+            System User: ${personalizationData.systemUser}`
         });
 
         let fixedCode = response?.text?.trim();

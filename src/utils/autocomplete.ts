@@ -23,7 +23,7 @@ export function getCodeContext(): string {
 /**
  * Calls the Gemini AI API for intelligent autocompletion based on comments.
  */
-export async function fetchAutocompletions(): Promise<string> {
+export async function fetchAutocompletions(personalizationData: any): Promise<string> {
     const codeContext = getCodeContext();
     if (!codeContext) {
         return "";
@@ -40,6 +40,12 @@ ${codeContext}
 
 ### Response Format:
 Return a **valid JSON object** with the key "updated_code".
+
+Additional Information :-
+- Tech Stack: ${personalizationData.techStack}
+- Project Name: ${personalizationData.projectName}
+- Project Directory: ${personalizationData.fileDirectory}
+- System Username: ${personalizationData.systemUser}
 `;
 
     try {

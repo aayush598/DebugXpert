@@ -8,37 +8,57 @@ import { fetchAutocompletions } from "./utils/autocomplete";
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "nexora" is now active!');
 
-    // Register Sidebar View
-    const treeDataProvider = new NexoraTreeDataProvider();
-    vscode.window.createTreeView("nexoraView", { treeDataProvider });
+    // Prompt for user inputs
+    vscode.window.showInformationMessage("Please provide project details for a personalized experience.");
 
-    // Register Sidebar Commands
-    context.subscriptions.push(
-        vscode.commands.registerCommand("nexora.fixErrors", () => {
-            errorfix();
-            vscode.window.showInformationMessage("Fixing Errors...");
-        }),
-        vscode.commands.registerCommand("nexora.evaluateCode", () => {
-            evaluateCode();
-            vscode.window.showInformationMessage("Evaluating Code...");
-        }),
-        vscode.commands.registerCommand("nexora.checkVulnerability", () => {
-            checkVulnerability();
-            vscode.window.showInformationMessage("Checking Vulnerability...");
-        }),
-        vscode.commands.registerCommand("nexora.addDocumentation", () => {
-            addDocumentation();
-            vscode.window.showInformationMessage("Adding Documentation...");
-        }),
-        vscode.commands.registerCommand("nexora.autoComplete", () => {
-            fetchAutocompletions();
-            vscode.window.showInformationMessage("Fetching Auto-Completion...");
-        })
-    );
+    getUserInputs().then((personalizationData) => {
+        // Register Sidebar View
+        const treeDataProvider = new NexoraTreeDataProvider();
+        vscode.window.createTreeView("nexoraView", { treeDataProvider });
+
+        // Register Sidebar Commands
+        context.subscriptions.push(
+            vscode.commands.registerCommand("nexora.fixErrors", () => {
+                errorfix(personalizationData);
+                vscode.window.showInformationMessage("Fixing Errors...");
+            }),
+            vscode.commands.registerCommand("nexora.evaluateCode", () => {
+                evaluateCode(personalizationData);
+                vscode.window.showInformationMessage("Evaluating Code...");
+            }),
+            vscode.commands.registerCommand("nexora.checkVulnerability", () => {
+                checkVulnerability(personalizationData);
+                vscode.window.showInformationMessage("Checking Vulnerability...");
+            }),
+            vscode.commands.registerCommand("nexora.addDocumentation", () => {
+                addDocumentation(personalizationData);
+                vscode.window.showInformationMessage("Adding Documentation...");
+            }),
+            vscode.commands.registerCommand("nexora.autoComplete", () => {
+                fetchAutocompletions(personalizationData);
+                vscode.window.showInformationMessage("Fetching Auto-Completion...");
+            })
+        );
+    });
 }
 
 export function deactivate() {
     console.log("VS Code Extension Deactivated");
+}
+
+// Function to get user inputs for personalization
+async function getUserInputs() {
+    const techStack = await vscode.window.showInputBox({ prompt: "Enter the Tech Stack (e.g., MERN, Django, Flask)" });
+    const projectName = await vscode.window.showInputBox({ prompt: "Enter the Project Name" });
+    const fileDirectory = await vscode.window.showInputBox({ prompt: "Enter the Project Directory" });
+    const systemUser = await vscode.window.showInputBox({ prompt: "Enter your System Username" });
+
+    return {
+        techStack: techStack || "Unknown",
+        projectName: projectName || "Unknown",
+        fileDirectory: fileDirectory || "Unknown",
+        systemUser: systemUser || "Unknown"
+    };
 }
 
 // Sidebar TreeDataProvider

@@ -63,7 +63,7 @@ Do not use markdown syntax like \`\`\`json, \`\`\`python, \`\`\`javascript, \`\`
     }
 }
 
-export async function addDocumentation() {
+export async function addDocumentation(personalizationData: any) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
         vscode.window.showErrorMessage("No active editor found!");
@@ -86,7 +86,12 @@ ${codeContext}
 - Analyze the provided code and generate JSDoc-style documentation for all functions.
 - Ensure the documentation includes function descriptions, parameter types, and return values.
 - Maintain proper indentation and formatting.
-Programming Language : python
+
+Additional Information :-
+- Tech Stack: ${personalizationData.techStack}
+- Project Name: ${personalizationData.projectName}
+- Project Directory: ${personalizationData.fileDirectory}
+- System Username: ${personalizationData.systemUser}
 `;
 
     try {
