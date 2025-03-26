@@ -12,6 +12,23 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "nexoraSidebar",
+                    "title": "Nexora",
+                    "icon": "resources/logo.svg"
+                }
+            ]
+        },
+        "views": {
+            "nexoraSidebar": [
+                {
+                    "id": "nexoraView",
+                    "name": "Nexora Actions"
+                }
+            ]
+        },
     "commands": [
       {
         "command": "nexora.helloWorld",
