@@ -4,50 +4,54 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM" });
+const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM"});
 
 export async function evaluateCode(personalizationData: any) {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
-        vscode.window.showErrorMessage("No active file open. Please open a file to evaluate.");
+        vscode.window.showErrorMessage("❌ No active file open. Please open a file to evaluate.");
         return;
     }
 
     const code = editor.document.getText().trim();
 
     if (!code) {
-        vscode.window.showErrorMessage("The file is empty. Please provide code to evaluate.");
+        vscode.window.showErrorMessage("⚠️ The file is empty. Please provide code to evaluate.");
         return;
     }
 
     const prompt = `
-You are an expert in software engineering and code quality analysis. Evaluate the following code and generate a structured report in Markdown format.
+You are an expert in software engineering and code quality analysis. Evaluate the following code and generate a structured Markdown report.
 
-### **Evaluation Criteria:**
-1. **Cyclomatic Complexity**  
-2. **Maintainability Index**  
-3. **Lines of Code (LOC)**  
-4. **Halstead Complexity Measures**  
-5. **Code Duplication**  
-6. **Code Coverage**  
-7. **Error Density**  
-8. **Documentation & Comments Ratio**  
-9. **Coupling & Cohesion**  
-10. **Security Vulnerabilities**  
-11. **Performance Metrics**  
+### **📌 Evaluation Criteria:**
+🔹 **Cyclomatic Complexity**  
+🔹 **Maintainability Index**  
+🔹 **Lines of Code (LOC)**  
+🔹 **Halstead Complexity Measures**  
+🔹 **Code Duplication**  
+🔹 **Code Coverage**  
+🔹 **Error Density**  
+🔹 **Documentation & Comments Ratio**  
+🔹 **Coupling & Cohesion**  
+🔹 **Security Vulnerabilities**  
+🔹 **Performance Metrics**  
 
-### **Code to Evaluate:**
+---
+
+### **📜 Code to Evaluate:**
 \`\`\`python
 ${code}
 \`\`\`
 
-Generate a well-structured Markdown report with clear sections, headings, and recommendations.
+---
 
-Additional Information :-
-- **Tech Stack:** ${personalizationData.techStack}
-- **Project Name:** ${personalizationData.projectName}
-- **System User:** ${personalizationData.systemUser}
+### **📝 Additional Information:**
+- **Tech Stack:** ${personalizationData.techStack}  
+- **Project Name:** ${personalizationData.projectName}  
+- **System User:** ${personalizationData.systemUser}  
+
+Generate a well-structured Markdown report with clear sections, bold headings, and actionable recommendations.
 `;
 
     try {
@@ -56,26 +60,116 @@ Additional Information :-
             contents: prompt,
         });
 
-        const evaluation = response.text?.trim() || "Failed to generate evaluation.";
+        const evaluation = response.text?.trim() || "⚠️ Failed to generate evaluation.";
 
-        if (!evaluation) {
-            vscode.window.showErrorMessage("No evaluation response received.");
-            return;
-        }
+        // Show analysis result in a well-styled WebView
+        const panel = vscode.window.createWebviewPanel(
+            'vulnerabilityAnalysis',
+            'Code Vulnerability Analysis',
+            vscode.ViewColumn.One,
+            { enableScripts: true }
+        );
 
-        const markdownContent = `# 📌 Code Quality Analysis Report\n\n${evaluation}`;
-
-        vscode.window.showInformationMessage("Code evaluation complete. Opening results...");
-
-        // Open results in a new Markdown document
-        const document = await vscode.workspace.openTextDocument({
-            content: markdownContent,
-            language: "markdown"
-        });
-
-        await vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
-
+        panel.webview.html = getStyledHTML(evaluation);
+        
+        
     } catch (error) {
-        vscode.window.showErrorMessage("Error evaluating code: " + (error instanceof Error ? error.message : "Unknown error"));
+        vscode.window.showErrorMessage("❌ Error evaluating code: " + (error instanceof Error ? error.message : "Unknown error"));
     }
+}
+
+
+// Function to convert Markdown text to styled HTML for display
+function getStyledHTML(markdownText: string): string {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Code Vulnerability Analysis</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 20px;
+                padding: 20px;
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+            h2 {
+                color: #ff9800;
+            }
+            pre {
+                background-color: #2d2d2d;
+                padding: 10px;
+                border-radius: 5px;
+                overflow-x: auto;
+            }
+            code {
+                font-family: "Courier New", monospace;
+                color: #ffcc00;
+            }
+            .container {
+                background: #252526;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            .collapsible {
+                background-color: #333;
+                color: white;
+                cursor: pointer;
+                padding: 10px;
+                width: 100%;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-size: 16px;
+                margin-top: 10px;
+                border-radius: 5px;
+            }
+            .active, .collapsible:hover {
+                background-color: #444;
+            }
+            .content {
+                padding: 10px;
+                display: none;
+                overflow: hidden;
+                background-color: #252526;
+                border-left: 2px solid #ff9800;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>🔍 Code Vulnerability Analysis</h2>
+            <div id="markdown-content"></div>
+        </div>
+
+        <script>
+            document.getElementById("markdown-content").innerHTML = marked.parse(\`${markdownText.replace(/`/g, "\\`")}\`);
+            
+            // Apply PrismJS Syntax Highlighting
+            document.querySelectorAll("pre code").forEach((block) => {
+                Prism.highlightElement(block);
+            });
+
+            // Collapsible Section Script
+            document.querySelectorAll(".collapsible").forEach(button => {
+                button.addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    let content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+            });
+        </script>
+    </body>
+    </html>`;
 }
