@@ -24,7 +24,7 @@ function getCodeContext(): string {
  */
 export async function addDocumentation() {
     const codeContext = getCodeContext();
-    if (!codeContext) return;
+    if (!codeContext) {return;}
 
     const prompt = `
 You are an AI-based documentation assistant. Your task is to analyze the given code and generate clear, concise, and properly formatted documentation comments.
