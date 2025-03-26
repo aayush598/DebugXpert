@@ -35,7 +35,6 @@ export async function errorfix(personalizationData: any): Promise<string> {
             Additional Information:
             Tech Stack: ${personalizationData.techStack}
             Project Name: ${personalizationData.projectName}
-            Project Directory: ${personalizationData.fileDirectory}
             System User: ${personalizationData.systemUser}`
         });
 

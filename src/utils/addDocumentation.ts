@@ -89,8 +89,7 @@ ${codeContext}
 
 Additional Information :-
 - Tech Stack: ${personalizationData.techStack}
-- Project Name: ${personalizationData.projectName}
-- Project Directory: ${personalizationData.fileDirectory}
+- Project Name: ${personalizationData.projectName}checkVulnerability
 - System Username: ${personalizationData.systemUser}
 `;
 

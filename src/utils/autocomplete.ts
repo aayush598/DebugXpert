@@ -44,7 +44,7 @@ Return a **valid JSON object** with the key "updated_code".
 Additional Information :-
 - Tech Stack: ${personalizationData.techStack}
 - Project Name: ${personalizationData.projectName}
-- Project Directory: ${personalizationData.fileDirectory}
+
 - System Username: ${personalizationData.systemUser}
 `;
 

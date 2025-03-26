@@ -50,13 +50,11 @@ export function deactivate() {
 async function getUserInputs() {
     const techStack = await vscode.window.showInputBox({ prompt: "Enter the Tech Stack (e.g., MERN, Django, Flask)" });
     const projectName = await vscode.window.showInputBox({ prompt: "Enter the Project Name" });
-    const fileDirectory = await vscode.window.showInputBox({ prompt: "Enter the Project Directory" });
-    const systemUser = await vscode.window.showInputBox({ prompt: "Enter your System Username" });
+    const systemUser = await vscode.window.showInputBox({ prompt: "Enter your System (Windows,Linux,Mac)" });
 
     return {
         techStack: techStack || "Unknown",
         projectName: projectName || "Unknown",
-        fileDirectory: fileDirectory || "Unknown",
         systemUser: systemUser || "Unknown"
     };
 }

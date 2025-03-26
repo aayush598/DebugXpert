@@ -47,7 +47,6 @@ Generate a well-structured Markdown report with clear sections, headings, and re
 Additional Information :-
 - **Tech Stack:** ${personalizationData.techStack}
 - **Project Name:** ${personalizationData.projectName}
-- **Project Directory:** ${personalizationData.fileDirectory}
 - **System User:** ${personalizationData.systemUser}
 `;
 
