@@ -11,45 +11,28 @@ export function activate(context: vscode.ExtensionContext) {
     // Register Sidebar View
     const treeDataProvider = new NexoraTreeDataProvider();
     vscode.window.createTreeView("nexoraView", { treeDataProvider });
-    // Register Command for Sidebar Click
+
+    // Register Sidebar Commands
     context.subscriptions.push(
-        vscode.commands.registerCommand("nexora.openQuickPick", async () => {
-            const options = [
-                { label: "Fix Errors", command: "fixErrors" },
-                { label: "Evaluate Code", command: "evaluateCode" },
-                { label: "Check Vulnerability", command: "checkVulnerability" },
-                { label: "Add Documentation", command: "addDocumentation" },
-                { label: "Auto Complete", command: "autoComplete" },
-            ];
-
-            const selection = await vscode.window.showQuickPick(options.map(opt => opt.label), {
-                placeHolder: "Select a function to execute",
-            });
-
-            if (!selection) return; // If user cancels
-
-            switch (selection) {
-                case "Fix Errors":
-                    errorfix();
-                    vscode.window.showInformationMessage("Fixing Errors...");
-                    break;
-                case "Evaluate Code":
-                    evaluateCode();
-                    vscode.window.showInformationMessage("Evaluating Code...");
-                    break;
-                case "Check Vulnerability":
-                    checkVulnerability();
-                    vscode.window.showInformationMessage("Checking Vulnerability...");
-                    break;
-                case "Add Documentation":
-                    addDocumentation();
-                    vscode.window.showInformationMessage("Adding Documentation...");
-                    break;
-                case "Auto Complete":
-                    fetchAutocompletions();
-                    vscode.window.showInformationMessage("Fetching Auto-Completion...");
-                    break;
-            }
+        vscode.commands.registerCommand("nexora.fixErrors", () => {
+            errorfix();
+            vscode.window.showInformationMessage("Fixing Errors...");
+        }),
+        vscode.commands.registerCommand("nexora.evaluateCode", () => {
+            evaluateCode();
+            vscode.window.showInformationMessage("Evaluating Code...");
+        }),
+        vscode.commands.registerCommand("nexora.checkVulnerability", () => {
+            checkVulnerability();
+            vscode.window.showInformationMessage("Checking Vulnerability...");
+        }),
+        vscode.commands.registerCommand("nexora.addDocumentation", () => {
+            addDocumentation();
+            vscode.window.showInformationMessage("Adding Documentation...");
+        }),
+        vscode.commands.registerCommand("nexora.autoComplete", () => {
+            fetchAutocompletions();
+            vscode.window.showInformationMessage("Fetching Auto-Completion...");
         })
     );
 }
@@ -65,8 +48,18 @@ class NexoraTreeDataProvider implements vscode.TreeDataProvider<vscode.TreeItem>
     }
 
     getChildren(): vscode.TreeItem[] {
-        const quickPickItem = new vscode.TreeItem("Open Nexora Actions");
-        quickPickItem.command = { command: "nexora.openQuickPick", title: "Open QuickPick" };
-        return [quickPickItem];
+        return [
+            this.createCommandItem("Fix Errors", "nexora.fixErrors"),
+            this.createCommandItem("Evaluate Code", "nexora.evaluateCode"),
+            this.createCommandItem("Check Vulnerability", "nexora.checkVulnerability"),
+            this.createCommandItem("Add Documentation", "nexora.addDocumentation"),
+            this.createCommandItem("Auto Complete", "nexora.autoComplete"),
+        ];
+    }
+
+    private createCommandItem(label: string, command: string): vscode.TreeItem {
+        const item = new vscode.TreeItem(label);
+        item.command = { command, title: label };
+        return item;
     }
 }

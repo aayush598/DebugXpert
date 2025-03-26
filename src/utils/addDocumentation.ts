@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInlM"  });
+const ai = new GoogleGenAI({ apiKey: "AIzaSyBNP8L1vFKs_zrWQLRL32aoM9TO7GcInl" });
 
 /**
  * Fetches the current open file's code as context.
@@ -37,18 +37,6 @@ You are an AI-based documentation assistant. Your task is to analyze the given c
 2. **Generate docstrings** in a format appropriate for the language (e.g., JSDoc for JavaScript/TypeScript, docstrings for Python).
 3. **Integrate the documentation into the existing code** without modifying logic.
 
-### Example Input:
-\`\`\`typescript
-function addNumbers(a: number, b: number): number {
-    return a + b;
-}
-\`\`\`
-
-### Expected Output:
-{
-  "updated_code": "/**\\n * Adds two numbers together.\\n * @param a - First number\\n * @param b - Second number\\n * @returns The sum of both numbers.\\n */\\nfunction addNumbers(a: number, b: number): number {\\n    return a + b;\\n}"
-}
-
 ### User's Code:
 \`\`\`
 ${codeContext}
@@ -72,8 +60,6 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
             return null;
         }
 
-        vscode.window.showInformationMessage(`Raw Response:\n${rawResponse}`);
-
         // Extract JSON safely using regex
         const jsonMatch = rawResponse.match(/\{[\s\S]*?\}/);
         if (!jsonMatch) {
@@ -81,8 +67,7 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
             return null;
         }
 
-        const jsonData = jsonMatch[0]; // Extract the matched JSON string
-        const parsedData = JSON.parse(jsonData);
+        const parsedData = JSON.parse(jsonMatch[0]);
 
         if (!parsedData.updated_code) {
             vscode.window.showInformationMessage("No documentation updates needed.");
@@ -93,6 +78,45 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
     } catch (error) {
         vscode.window.showErrorMessage("Error fetching documentation: " + (error instanceof Error ? error.message : "Unknown error"));
         return null;
+    }
+}
+
+/**
+ * Opens a virtual document for comparison.
+ * @param content The text content of the virtual document.
+ * @returns A promise resolving to the virtual document.
+ */
+async function createVirtualFile(content: string): Promise<vscode.TextDocument> {
+    return await vscode.workspace.openTextDocument({ content, language: 'typescript' });
+}
+
+/**
+ * Compares old and new code before applying updates.
+ * @param originalText The current code in the editor.
+ * @param updatedText The AI-generated documentation-enhanced code.
+ */
+async function compareAndApplyDocumentation(originalText: string, updatedText: string) {
+    if (originalText === updatedText) {
+        vscode.window.showInformationMessage("No changes detected. The file is already up to date.");
+        return;
+    }
+
+    try {
+        const virtualDoc = await createVirtualFile(updatedText);
+        vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('untitled:original.ts'), virtualDoc.uri, "Documentation Changes");
+
+        // Ask the user if they want to apply the changes
+        vscode.window.showInformationMessage("Do you want to apply the suggested documentation updates?", "Yes", "No")
+            .then(selection => {
+                // Close the comparison window automatically
+                vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+
+                if (selection === "Yes") {
+                    applyCodeUpdate(updatedText);
+                }
+            });
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error creating virtual file: ${error}`);
     }
 }
 
@@ -140,7 +164,7 @@ const disposableDocs = vscode.commands.registerCommand('extension.addDocumentati
             return;
         }
 
-        applyCodeUpdate(newDocs);
+        await compareAndApplyDocumentation(oldCode, newDocs);
     } catch (error) {
         vscode.window.showErrorMessage(`Error adding documentation: ${error}`);
     }
