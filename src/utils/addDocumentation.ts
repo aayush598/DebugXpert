@@ -33,7 +33,7 @@ Instructions:
 Do not add special characters
 Do not change the coding style
 Do not use markdown syntax like \`\`\`json, \`\`\`python, \`\`\`javascript, \`\`\` etc.
-`; // Updated instruction to explicitly avoid additional markdown code blocks
+`;
 
     try {
         vscode.window.showInformationMessage(`Fetching AI code completion...`);
@@ -48,35 +48,19 @@ Do not use markdown syntax like \`\`\`json, \`\`\`python, \`\`\`javascript, \`\`
             return "";
         }
 
-        // Remove unwanted markdown formatting if present
-        updatedCode = updatedCode.replace(/\`\`\`(?:json|python|javascript)?\n?/g, ''); // Added logic to strip code block markers
+        updatedCode = updatedCode.replace(/\`\`\`(?:json|python|javascript)?\n?/g, '');
 
-        openAndCompareFile(codeContext, updatedCode, "Code Comparison");
+        // Open comparison view
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            openAndCompareFile(editor.document.getText(), updatedCode, "AI-Suggested Changes");
+        }
+
         return updatedCode;
     } catch (error) {
         vscode.window.showErrorMessage("Error fetching code updates: " + (error instanceof Error ? error.message : "Unknown error"));
         return "";
     }
-}
-
-function applyCodeUpdate(updatedCode: string) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        vscode.window.showErrorMessage("No active editor found.");
-        return;
-    }
-
-    const document = editor.document;
-    const fullRange = new vscode.Range(
-        document.positionAt(0),
-        document.positionAt(document.getText().length)
-    );
-
-    editor.edit(editBuilder => {
-        editBuilder.replace(fullRange, updatedCode);
-    });
-
-    vscode.window.showInformationMessage("Code updated successfully.");
 }
 
 export async function addDocumentation() {
@@ -118,10 +102,12 @@ Programming Language : python
             return;
         }
 
-        // Remove markdown formatting if present
-        documentedCode = documentedCode.replace(/\`\`\`(?:json|python|javascript)?\n?/g, ''); // Added logic to strip documentation code block markers
+        documentedCode = documentedCode.replace(/\`\`\`(?:json|python|javascript)?\n?/g, '');
 
-        applyCodeUpdate(documentedCode);
+        // Open comparison view
+        if (editor) {
+            openAndCompareFile(editor.document.getText(), documentedCode, "AI-Generated Documentation");
+        }
     } catch (error) {
         vscode.window.showErrorMessage("Error generating documentation: " + (error instanceof Error ? error.message : "Unknown error"));
     }
