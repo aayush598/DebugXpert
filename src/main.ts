@@ -1,6 +1,5 @@
-import { openFile } from './utils/fileNavigation';
+import { openAndCompareFile } from './utils/compareFile';
 
 export function activateMain() {
-    console.log("Activating main functionality...");
-    openFile(); // Calls file navigation function
+    openAndCompareFile();
 }
