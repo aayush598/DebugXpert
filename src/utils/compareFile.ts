@@ -1,54 +1,51 @@
 import * as vscode from 'vscode';
 import { openFile } from './fileNavigation';
 
-export function openAndCompareFile() {
-    const fixedText = `print("Hello")\n abc \n print("Python")`;
+export function openAndCompareFile(originalText: string, fixedText: string, title: string) {
+    if (originalText === fixedText) {
+        vscode.window.showInformationMessage("No changes detected. The file is already up to date.");
+        return;
+    }
 
-    openFile().then(document => {
-        const originalText = document.getText();
-
-        if (originalText === fixedText) {
-            vscode.window.showInformationMessage("No changes detected. The file is already up to date.");
-            return;
-        }
-
-        vscode.commands.executeCommand('vscode.diff', document.uri, createVirtualFile(fixedText), "File Comparison");
+    createVirtualFile(fixedText).then(fixedUri => {
+        vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('untitled:original.txt'), fixedUri, title);
 
         // Ask the user if they want to apply the changes
         vscode.window.showInformationMessage("Do you want to apply the suggested changes?", "Yes", "No")
             .then(selection => {
                 if (selection === "Yes") {
-                    applyChanges(document, fixedText);
+                    applyChanges(originalText, fixedText);
                 }
             });
 
     }).catch(err => {
-        vscode.window.showErrorMessage(`Error opening file: ${err}`);
+        vscode.window.showErrorMessage(`Error creating virtual file: ${err}`);
     });
 }
 
 // Create a virtual document for comparison
-function createVirtualFile(content: string): vscode.Uri {
-    const fixedUri = vscode.Uri.parse('untitled:FixedVersion.txt');
-    vscode.workspace.openTextDocument(fixedUri).then(fixedDoc => {
-        const edit = new vscode.WorkspaceEdit();
-        edit.insert(fixedUri, new vscode.Position(0, 0), content);
-        vscode.workspace.applyEdit(edit);
-    });
-    return fixedUri;
+async function createVirtualFile(content: string): Promise<vscode.Uri> {
+    const doc = await vscode.workspace.openTextDocument({ content });
+    return doc.uri;
 }
 
 // Apply changes to the real file
-function applyChanges(document: vscode.TextDocument, newText: string) {
+function applyChanges(documentText: string, newText: string) {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showErrorMessage("No active text editor found.");
+        return;
+    }
+
     const edit = new vscode.WorkspaceEdit();
     const fullRange = new vscode.Range(
-        document.positionAt(0),
-        document.positionAt(document.getText().length)
+        new vscode.Position(0, 0),
+        editor.document.positionAt(documentText.length)
     );
 
-    edit.replace(document.uri, fullRange, newText);
+    edit.replace(editor.document.uri, fullRange, newText);
     vscode.workspace.applyEdit(edit).then(() => {
-        document.save();
+        editor.document.save();
         vscode.window.showInformationMessage("Changes applied successfully.");
     });
 }

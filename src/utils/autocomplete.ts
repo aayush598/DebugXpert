@@ -22,31 +22,15 @@ export function getCodeContext(): string {
 /**
  * Calls the Gemini AI API for intelligent autocompletion based on comments.
  */
-export async function fetchAutocompletions() {
+export async function fetchAutocompletions(): Promise<string> {
     const codeContext = getCodeContext();
-    if (!codeContext) {return;}
+    if (!codeContext) {
+        return "";
+    }
 
     const prompt = `
 You are an AI-based code assistant. The user has written some comments indicating code that needs to be completed.
 Your task is to intelligently generate the missing code while keeping the overall coding style and context.
-
-### Instructions:
-1. Identify comments that describe incomplete or missing code.
-2. Generate the missing code and integrate it seamlessly.
-3. If no updates are needed, return an empty response.
-
-### Example Input:
-\`\`\`python
-# Define a function to calculate factorial
-def factorial(n):
-    # TODO: Implement the factorial logic
-    return result
-\`\`\`
-
-### Expected JSON Output:
-{
-  "updated_code": "def factorial(n):\\n    if n == 0 or n == 1:\\n        return 1\\n    return n * factorial(n - 1)"
-}
 
 ### User's Code:
 \`\`\`
@@ -54,7 +38,7 @@ ${codeContext}
 \`\`\`
 
 ### Response Format:
-Return a **valid JSON object** with the key "updated_code". Do not include any extra text, explanations, or formatting.
+Return a **valid JSON object** with the key "updated_code".
 `;
 
     try {
@@ -68,29 +52,25 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
         const rawResponse = response.text?.trim();
         if (!rawResponse) {
             vscode.window.showInformationMessage("No code updates suggested.");
-            return;
+            return "";
         }
-
-        vscode.window.showInformationMessage(`Raw Response:\n${rawResponse}`);
 
         // Extract JSON safely using regex
         const jsonMatch = rawResponse.match(/\{[\s\S]*?\}/);
         if (!jsonMatch) {
             vscode.window.showErrorMessage("Error: AI response is not valid JSON.");
-            return;
+            return "";
         }
 
-        const jsonData = jsonMatch[0]; // Extract the matched JSON string
-        const parsedData = JSON.parse(jsonData);
+        const parsedData = JSON.parse(jsonMatch[0]);
 
         if (!parsedData.updated_code) {
             vscode.window.showInformationMessage("No code updates needed.");
-            return;
+            return "";
         }
 
         const updatedCode = parsedData.updated_code;
 
-        // Show the updated code and ask for confirmation
         const userChoice = await vscode.window.showInformationMessage(
             `AI suggests the following update:\n\n${updatedCode}\n\nDo you want to apply the changes?`,
             "Yes", "No"
@@ -99,8 +79,11 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
         if (userChoice === "Yes") {
             applyCodeUpdate(updatedCode);
         }
+
+        return updatedCode;
     } catch (error) {
         vscode.window.showErrorMessage("Error fetching code updates: " + (error instanceof Error ? error.message : "Unknown error"));
+        return "";
     }
 }
 
@@ -126,4 +109,30 @@ function applyCodeUpdate(updatedCode: string) {
     });
 
     vscode.window.showInformationMessage("Code updated successfully.");
+}
+
+/**
+ * Adds documentation for the currently open function.
+ */
+export function addDocumentation() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showErrorMessage("No active editor found!");
+        return;
+    }
+
+    const position = editor.selection.start;
+
+    const docTemplate = `/**
+ * @function functionName
+ * @description Description of the function
+ * @param {type} param - Description
+ * @returns {type} Description
+ */\n`;
+
+    editor.edit(editBuilder => {
+        editBuilder.insert(position, docTemplate);
+    });
+
+    vscode.window.showInformationMessage("Documentation added.");
 }

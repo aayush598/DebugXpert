@@ -21,10 +21,13 @@ function getCodeContext(): string {
 
 /**
  * Calls Gemini AI to generate documentation for the code.
+ * @returns A promise that resolves to the updated code with documentation.
  */
-export async function addDocumentation() {
+export async function addDocumentation(): Promise<string | null> {
     const codeContext = getCodeContext();
-    if (!codeContext) {return;}
+    if (!codeContext) {
+        return null;
+    }
 
     const prompt = `
 You are an AI-based documentation assistant. Your task is to analyze the given code and generate clear, concise, and properly formatted documentation comments.
@@ -66,7 +69,7 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
         const rawResponse = response.text?.trim();
         if (!rawResponse) {
             vscode.window.showInformationMessage("No documentation updates suggested.");
-            return;
+            return null;
         }
 
         vscode.window.showInformationMessage(`Raw Response:\n${rawResponse}`);
@@ -75,7 +78,7 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
         const jsonMatch = rawResponse.match(/\{[\s\S]*?\}/);
         if (!jsonMatch) {
             vscode.window.showErrorMessage("Error: AI response is not valid JSON.");
-            return;
+            return null;
         }
 
         const jsonData = jsonMatch[0]; // Extract the matched JSON string
@@ -83,22 +86,13 @@ Return a **valid JSON object** with the key "updated_code". Do not include any e
 
         if (!parsedData.updated_code) {
             vscode.window.showInformationMessage("No documentation updates needed.");
-            return;
+            return null;
         }
 
-        const updatedCode = parsedData.updated_code;
-
-        // Show the updated code and ask for confirmation
-        const userChoice = await vscode.window.showInformationMessage(
-            `AI suggests the following documentation:\n\n${updatedCode}\n\nDo you want to apply the changes?`,
-            "Yes", "No"
-        );
-
-        if (userChoice === "Yes") {
-            applyCodeUpdate(updatedCode);
-        }
+        return parsedData.updated_code;
     } catch (error) {
         vscode.window.showErrorMessage("Error fetching documentation: " + (error instanceof Error ? error.message : "Unknown error"));
+        return null;
     }
 }
 
@@ -125,3 +119,29 @@ function applyCodeUpdate(updatedCode: string) {
 
     vscode.window.showInformationMessage("Documentation added successfully.");
 }
+
+const disposableDocs = vscode.commands.registerCommand('extension.addDocumentation', async () => {
+    try {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active text editor found.');
+            return;
+        }
+
+        const oldCode = editor.document.getText();
+        if (!oldCode.trim()) {
+            vscode.window.showErrorMessage('The file is empty. No documentation can be added.');
+            return;
+        }
+
+        const newDocs = await addDocumentation();
+        if (!newDocs) {
+            vscode.window.showInformationMessage("No changes applied.");
+            return;
+        }
+
+        applyCodeUpdate(newDocs);
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error adding documentation: ${error}`);
+    }
+});
