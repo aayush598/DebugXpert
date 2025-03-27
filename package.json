@@ -1,9 +1,10 @@
 {
-  "name": "nexora",
-  "displayName": "Nexora",
+  "name": "DebugXpert",
+  "displayName": "DebugXpert",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "aayushgid",
+  "icon": "resources/logo2.svg",
   "repository": {
     "type": "git",
     "url": "https://github.com/aayush598/Nexora.git"
