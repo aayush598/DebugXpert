@@ -2,8 +2,8 @@ Here’s a **README.md** file for your VS Code extension **Nexora**, formatted p
 
 ---
 
-# **Nexora - AI-Powered Code Assistant for VS Code**  
-🚀 **Nexora** is an AI-powered VS Code extension that helps developers improve their code by providing error fixes, evaluation, security vulnerability detection, documentation, and autocompletions.
+# **DebugXpert - AI-Powered Code Assistant for VS Code**  
+🚀 **DebugXpert** is an AI-powered VS Code extension that helps developers improve their code by providing error fixes, evaluation, security vulnerability detection, documentation, and autocompletions.
 
 ![Nexora Logo](https://your-image-url.com/logo.png) *(Replace with actual logo if available)*
 
