@@ -34,7 +34,6 @@ You are an expert in software engineering and code quality analysis. Evaluate th
 🔹 **Error Density**  
 🔹 **Documentation & Comments Ratio**  
 🔹 **Coupling & Cohesion**  
-🔹 **Security Vulnerabilities**  
 🔹 **Performance Metrics**  
 
 ---
@@ -64,8 +63,8 @@ Generate a well-structured Markdown report with clear sections, bold headings, a
 
         // Show analysis result in a well-styled WebView
         const panel = vscode.window.createWebviewPanel(
-            'vulnerabilityAnalysis',
-            'Code Vulnerability Analysis',
+            'EvaluateCode',
+            'Code Evaluate Code',
             vscode.ViewColumn.One,
             { enableScripts: true }
         );
@@ -87,7 +86,7 @@ function getStyledHTML(markdownText: string): string {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Code Vulnerability Analysis</title>
+        <title>Code Evaluation</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -145,7 +144,7 @@ function getStyledHTML(markdownText: string): string {
     </head>
     <body>
         <div class="container">
-            <h2>🔍 Code Vulnerability Analysis</h2>
+            <h2>🔍 Code Evaluation</h2>
             <div id="markdown-content"></div>
         </div>
 
