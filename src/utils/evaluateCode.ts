@@ -51,6 +51,20 @@ ${code}
 - **System User:** ${personalizationData.systemUser}  
 
 Generate a well-structured Markdown report with clear sections, bold headings, and actionable recommendations.
+
+### **📖 References & Learning Resources**
+🔹 Provide **official documentation links** related to the used libraries, frameworks, and best coding practices.  
+🔹 Fetch **relevant blogs/articles** explaining the code's key concepts.  
+🔹 Find **YouTube video links** explaining similar code implementations or concepts.  
+
+⚡ **Ensure that all references are from trusted sources like:**
+- Official Docs (MDN, Python Docs, Java Docs, etc.)
+- Stack Overflow
+- Blogs from Google Developers, Microsoft, etc.
+- YouTube (Only educational & technical videos)
+
+🔹 **Format the response in structured Markdown with clickable links.**  
+
 `;
 
     try {
