@@ -1,11 +1,11 @@
-Here’s a **README.md** file for your VS Code extension **Nexora**, formatted professionally with installation steps, features, usage instructions, and contribution guidelines.  
+Here’s a **README.md** file for your VS Code extension **DebugXpert**, formatted professionally with installation steps, features, usage instructions, and contribution guidelines.  
 
 ---
 
 # **DebugXpert - AI-Powered Code Assistant for VS Code**  
 🚀 **DebugXpert** is an AI-powered VS Code extension that helps developers improve their code by providing error fixes, evaluation, security vulnerability detection, documentation, and autocompletions.
 
-![Nexora Logo](https://your-image-url.com/logo.png) *(Replace with actual logo if available)*
+![DebugXpert Logo](https://your-image-url.com/logo.png) *(Replace with actual logo if available)*
 
 ---
 
@@ -21,26 +21,26 @@ Here’s a **README.md** file for your VS Code extension **Nexora**, formatted p
 ## **🛠 Installation**
 1. Open **VS Code**.  
 2. Go to **Extensions** (`Ctrl + Shift + X`).  
-3. Search for **"Nexora"**.  
+3. Search for **"DebugXpert"**.  
 4. Click **Install**.  
 5. You're ready to go! 🎉  
 
 Alternatively, install via CLI:
 ```sh
-code --install-extension your-publisher.nexora
+code --install-extension your-publisher.DebugXpert
 ```
 
 ---
 
 ## **🚀 How to Use**
 1. Open your code file in VS Code.  
-2. Click on the **Nexora Sidebar** or run commands from the **Command Palette (`Ctrl + Shift + P`)**.  
+2. Click on the **DebugXpert Sidebar** or run commands from the **Command Palette (`Ctrl + Shift + P`)**.  
 3. Select one of the following commands:
-   - `Nexora: Fix Errors`
-   - `Nexora: Evaluate Code`
-   - `Nexora: Check Vulnerabilities`
-   - `Nexora: Add Documentation`
-   - `Nexora: Auto Complete`
+   - `DebugXpert: Fix Errors`
+   - `DebugXpert: Evaluate Code`
+   - `DebugXpert: Check Vulnerabilities`
+   - `DebugXpert: Add Documentation`
+   - `DebugXpert: Auto Complete`
 4. Wait for AI to process and update your code.  
 
 ---
@@ -48,22 +48,22 @@ code --install-extension your-publisher.nexora
 ## **⚙️ Commands**
 | Command | Description |
 |---------|-------------|
-| `nexora.fixErrors` | Fixes syntax & logical errors in your code. |
-| `nexora.evaluateCode` | Evaluates code quality and suggests improvements. |
-| `nexora.checkVulnerability` | Scans for security vulnerabilities. |
-| `nexora.addDocumentation` | Generates documentation for functions & classes. |
-| `nexora.autoComplete` | Provides intelligent autocompletions. |
+| `DebugXpert.fixErrors` | Fixes syntax & logical errors in your code. |
+| `DebugXpert.evaluateCode` | Evaluates code quality and suggests improvements. |
+| `DebugXpert.checkVulnerability` | Scans for security vulnerabilities. |
+| `DebugXpert.addDocumentation` | Generates documentation for functions & classes. |
+| `DebugXpert.autoComplete` | Provides intelligent autocompletions. |
 
 ---
 
 ## **📸 Screenshots**
-*(Add screenshots showing Nexora in action!)*  
+*(Add screenshots showing DebugXpert in action!)*  
 ![Screenshot](https://your-image-url.com/screenshot1.png)  
 
 ---
 
 ## **🔧 Configuration**
-Nexora uses **Google Gemini AI** to analyze and improve your code. You need to set up an API key:  
+DebugXpert uses **Google Gemini AI** to analyze and improve your code. You need to set up an API key:  
 
 1. Create a `.env` file in the project root.  
 2. Add the following line:
@@ -80,7 +80,7 @@ Contributions are welcome! Follow these steps to contribute:
 1. Fork the repository.  
 2. Clone your forked repository:  
    ```sh
-   git clone https://github.com/your-username/nexora.git
+   git clone https://github.com/your-username/DebugXpert.git
    ```
 3. Install dependencies:
    ```sh
@@ -96,7 +96,7 @@ Contributions are welcome! Follow these steps to contribute:
 ---
 
 ## **🐞 Issues & Support**
-If you encounter any bugs or issues, please open an issue on [GitHub](https://github.com/your-username/nexora/issues).  
+If you encounter any bugs or issues, please open an issue on [GitHub](https://github.com/your-username/DebugXpert/issues).  
 
 For discussions and feature requests, join our **Discord community** *(Add Discord link if available)*.
 
