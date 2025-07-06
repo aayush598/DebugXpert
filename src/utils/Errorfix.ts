@@ -7,19 +7,19 @@ export async function errorfix(personalizationData: any): Promise<string> {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
-        vscode.window.showErrorMessage("⚠ No active text editor found.");
+        vscode.window.showErrorMessage(" No active text editor found.");
         return "";
     }
 
     const document = editor.document;
     if (document.languageId === 'plaintext' || document.uri.scheme !== 'file') {
-        vscode.window.showErrorMessage("⚠ Please open a valid code file.");
+        vscode.window.showErrorMessage(" Please open a valid code file.");
         return "";
     }
 
     const code = document.getText().trim();
     if (!code) {
-        vscode.window.showErrorMessage("⚠ The file is empty.");
+        vscode.window.showErrorMessage(" The file is empty.");
         return "";
     }
 

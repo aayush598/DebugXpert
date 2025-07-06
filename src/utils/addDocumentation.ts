@@ -5,7 +5,14 @@ import { openAndCompareFile } from './compareFile';
 
 dotenv.config();
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyAYnPOFFWtJRIUz_j-fhNa6iZ6rFKyUG2c"});
+const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+
+if (!apiKey) {
+    console.error("GOOGLE_GENAI_API_KEY is not set in the environment variables.");
+    vscode.window.showErrorMessage("GOOGLE_GENAI_API_KEY is not set. Please configure your environment variables.");
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
 export function getCodeContext(): string {
     const editor = vscode.window.activeTextEditor;
@@ -37,12 +44,10 @@ Do not use markdown syntax like \`\`\`json, \`\`\`python, \`\`\`javascript, \`\`
 
     try {
         vscode.window.showInformationMessage(`Fetching AI code completion...`);
-        const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: prompt,
-        });
+        const model = ai.model("gemini-2.0-flash");
+        const result = await model.generateContent(prompt);
 
-        let updatedCode = response.text?.trim() || "";
+        let updatedCode = result.response.text()?.trim() || "";
         if (!updatedCode) {
             vscode.window.showInformationMessage("No code updates suggested.");
             return "";
@@ -89,18 +94,17 @@ ${codeContext}
 
 Additional Information :-
 - Tech Stack: ${personalizationData.techStack}
-- Project Name: ${personalizationData.projectName}checkVulnerability
+- Project Name: ${personalizationData.projectName}
 - System Username: ${personalizationData.systemUser}
 `;
 
     try {
         vscode.window.showInformationMessage(`Fetching AI-generated documentation...`);
-        const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: prompt,
-        });
+        const model = ai.model("gemini-2.0-flash");
+        const result = await model.generateContent(prompt);
 
-        let documentedCode = response.text?.trim() || "";
+        let documentedCode = result.response.text()?.trim() || "";
+
         if (!documentedCode) {
             vscode.window.showInformationMessage("No documentation generated.");
             return;
