@@ -1,11 +1,5 @@
-Here’s a **README.md** file for your VS Code extension **DebugXpert**, formatted professionally with installation steps, features, usage instructions, and contribution guidelines.  
-
----
-
 # **DebugXpert - AI-Powered Code Assistant for VS Code**  
 🚀 **DebugXpert** is an AI-powered VS Code extension that helps developers improve their code by providing error fixes, evaluation, security vulnerability detection, documentation, and autocompletions.
-
-![DebugXpert Logo](https://your-image-url.com/logo.png) *(Replace with actual logo if available)*
 
 ---
 
@@ -56,12 +50,6 @@ code --install-extension your-publisher.DebugXpert
 
 ---
 
-## **📸 Screenshots**
-*(Add screenshots showing DebugXpert in action!)*  
-![Screenshot](https://your-image-url.com/screenshot1.png)  
-
----
-
 ## **🔧 Configuration**
 DebugXpert uses **Google Gemini AI** to analyze and improve your code. You need to set up an API key:  
 
@@ -80,7 +68,7 @@ Contributions are welcome! Follow these steps to contribute:
 1. Fork the repository.  
 2. Clone your forked repository:  
    ```sh
-   git clone https://github.com/your-username/DebugXpert.git
+   git clone https://github.com/aayush598/DebugXpert.git
    ```
 3. Install dependencies:
    ```sh
@@ -107,11 +95,8 @@ This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for d
 
 ---
 
-🔹 **Developed by [Your Name]**  
-🔹 **Follow me on [GitHub](https://github.com/your-username) | [Twitter](https://twitter.com/your-handle)**  
+🔹 **Developed by Team Vedic Vortex**  
+🔹 **Follow me on [GitHub](https://github.com/aayush598)**  
 
 🚀 **Happy Coding!** 🚀
 
----
-
-Let me know if you want any modifications! 🚀
